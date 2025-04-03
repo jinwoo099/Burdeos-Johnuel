@@ -1,0 +1,111 @@
+#include <iostream>
+#include <cstring> 
+
+using namespace std;
+
+const int MAX_STUDENTS = 100;
+
+struct Student {
+    char name[50];
+    int score;
+    char grade[3];
+};
+
+Student students[MAX_STUDENTS];
+int studentCount = 0;
+
+char* getGrade(int score) {
+    static char grade[3];
+    
+    if (score >= 90) {
+        strcpy(grade, "A");
+    } else if (score >= 80) {
+        strcpy(grade, "B");
+    } else if (score >= 70) {
+        strcpy(grade, "C");
+    } else if (score >= 60) {
+        strcpy(grade, "D");
+    } else {
+        strcpy(grade, "F");
+    }
+    
+    return grade;
+}
+
+void addStudent() {
+    if (studentCount >= MAX_STUDENTS) {
+        cout << "Inventory full! Cannot add more students." << endl;
+        return;
+    }
+    
+    Student s;
+    
+    cout << "Enter student name: ";
+    cin.ignore();
+    cin.getline(s.name, 50);
+    
+    if (strlen(s.name) == 0) {
+        cout << "Error: Name cannot be empty!" << endl;
+        return;
+    }
+    
+    cout << "Enter student score (0-100): ";
+    while (!(cin >> s.score) || s.score < 0 || s.score > 100) {
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cout << "Invalid score! Please enter a number between 0 and 100: ";
+    }
+    
+    strcpy(s.grade, getGrade(s.score));
+    students[studentCount++] = s;
+    
+    cout << "Student added successfully!" << endl;
+}
+
+void displayStudents() {
+    if (studentCount == 0) {
+        cout << "No students in inventory." << endl;
+        return;
+    }
+    
+    cout << "\nStudent Records:" << endl;
+    cout << "----------------------" << endl;
+    for (int i = 0; i < studentCount; i++) {
+        cout << "Name: " << students[i].name << "\nScore: " << students[i].score << "\nGrade: " << students[i].grade << "\n";
+        cout << "----------------------" << endl;
+    }
+}
+
+int main() {
+    int choice;
+    
+    do {
+        cout << "\nGrading System Inventory" << endl;
+        cout << "1. Add Student" << endl;
+        cout << "2. Display Students" << endl;
+        cout << "3. Exit" << endl;
+        cout << "Enter your choice: ";
+        
+        while (!(cin >> choice)) {
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cout << "Invalid input! Please enter a number: ";
+        }
+        
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                cout << "Exiting program..." << endl;
+                break;
+            default:
+                cout << "Invalid choice! Please try again." << endl;
+        }
+    } while (choice != 3);
+    
+    return 0;
+}
